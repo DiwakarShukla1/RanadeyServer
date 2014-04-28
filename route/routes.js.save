@@ -1,0 +1,68 @@
+var gcm = require('node-gcm');
+var couchbase = require('couchbase');
+var db = new couchbase.Connection({host:
+'http://ec2-54-187-81-34.us-west-2.compute.amazonaws.com:8091',
+ bucket: 'ranadeydata'});
+// or with object values
+var msg = new gcm.Message();
+var sender = new gcm.Sender('AIzaSyD17YjE8f6SU4nue-WvfYUqCwzvJy2yFv8');
+
+module.exports=function(app){
+	app.post("/GCMRegKey",function(req,res){
+		try{
+			db.get(req.body.email,function(err,res){
+				var newRes=getValue(res);
+				newRes.RegKey=req.body.RegKey;
+				db.set(req.body.email,newRes,function(err,result){
+					console.log(result);
+				});
+			});
+			console.log(req.body.email);
+			//console.log(req.body.RegKey);	
+			res.end("suceess");
+		}catch(err){
+			res.end("Error");
+		}
+	});
+
+	app.get("/",function(req,res){
+		var query=db.view('Info','Info');
+		query.query([{key:"diwakarshukla14@gmail.com"},{key:"maheshgrt007@gmail.com"}],function(err,res){
+			console.log(JSON.stringify(res));
+		});
+		console.log("dk");
+		res.end("ddsfk");
+	});
+		
+	function SendTOParrent(senderEmail,Message){		
+		db.get(senderEmail,function(err,res){
+			var newRes=getValue(res);
+			console.log(newRes.allParent);
+			newRes.allParent.forEach(function(data){
+				db.get(data,function(err,finalRes){
+					finalRes=getValue(finalRes);
+					console.log(finalRes.RegKey);
+				});
+			});
+		});
+		
+	}
+
+	function getValue(doc){
+		while(!doc.Name){
+			doc=doc.value;
+		}
+   		 return doc;
+	}
+
+
+	app.post("/ChatWithParrent",function(req,res){
+		console.log(req.body);
+		SendTOParrent(req.body.senderEmail,req.body.message);
+	});
+
+	app.post("/ChatWithGroup",function(req,res){
+		SendGroupMessage(req.body.senderEmail,req.body.Message);
+	});
+
+}
