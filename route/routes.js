@@ -1,8 +1,8 @@
 var gcm = require('node-gcm');
 var couchbase = require('couchbase');
 var db = new couchbase.Connection({host:
-'ec2-54-187-111-33.us-west-2.compute.amazonaws.com:8091',
- bucket: 'ranadeyData'});
+'ec2-54-187-152-26.us-west-2.compute.amazonaws.com:8091',
+ bucket: 'updata'});
 // or with object values
 //var msg = new gcm.Message();
 /*var message = new gcm.Message({
@@ -87,6 +87,9 @@ module.exports=function(app){
 	}
 
 	function getValue(doc){
+		if(doc===null){
+			return null;
+		}
 		while(!doc.Name){
 			doc=doc.value;
 		}
@@ -130,5 +133,52 @@ module.exports=function(app){
 		console.log(JSON.stringify(req.body));
 		SendMessage(req.body.senderEmail,req.body.recieverEmail,req.body.message);	
 	});
+
+	app.get("/getParrent/:emailId",function(req,res){
+		db.get(req.params.emailId,function(err,result){
+			result=getValue(result);
+			//console.log(result.allParrent);
+			var count=0;
+			var resArray=[];
+			for(var i in result.allParrent){
+				db.get(result.allParrent[i],function(err,result1){
+					result1=getValue(result1);
+					var newObj={Name:result1.Name,Email:result1.Email};
+					count++;
+					resArray.push(newObj);
+					if(count==result.allParrent.length){
+						res.json(resArray);
+					}
+					//console.log(result1.Name);
+				});
+			}
+			//console.log("Finished");
+		});
+	});
+
+	app.get("/getChild/:emailId",function(req,res){
+                db.get(req.params.emailId,function(err,result){
+			//console.log(result);
+                        result=getValue(result);
+                        //console.log(result);
+                        var count=0;
+                        var resArray=[];
+                        for(var i in result.Child){
+                                db.get(result.Child[i],function(err,result1){
+					//console.log(result1);
+                                        result1=getValue(result1);
+                                        var newObj={Name:result1.Name,Email:result1.Email};
+                                        count++;
+                                        resArray.push(newObj);
+                                        if(count==result.Child.length){
+                                                res.json(resArray);
+                                        }
+                                        //console.log(result1.Name);
+                                });
+                        }
+                        //console.log("Finished");
+                });
+        });
+
 
 }
