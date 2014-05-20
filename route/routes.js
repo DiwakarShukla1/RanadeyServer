@@ -2,11 +2,10 @@ var gcm = require('node-gcm');
 var couchbase = require('couchbase');
 var db = new couchbase.Connection({host:
 'ec2-54-187-152-26.us-west-2.compute.amazonaws.com:8091',
- bucket: 'updata'});
-// or with object values
-//var msg = new gcm.Message();
+ bucket: 'maharashtradata'});
+
 /*var message = new gcm.Message({
-    collapse_key: '',
+    collapse_key: 'test',
     data: {
         key1: 'value1'
     },
@@ -15,19 +14,13 @@ var db = new couchbase.Connection({host:
     dry_run: false
 });*/
 
-var message = new gcm.Message({
-    collapse_key: 'test',
-    data: {
-        key1: 'value1'
-    },
-    delay_while_idle: true,
-    time_to_live: 34,
-    dry_run: false
-});
-
 var sender = new gcm.Sender('AIzaSyD17YjE8f6SU4nue-WvfYUqCwzvJy2yFv8');
 
 module.exports=function(app){
+	app.post("/postLocation",function(req,res){
+		console.log(JSON.stringify(req.body));
+	});
+
 	app.post("/GCMRegKey",function(req,res){
 		try{
 			console.log(req.body);
@@ -46,11 +39,16 @@ module.exports=function(app){
 			//console.log(req.body.RegKey);	
 			res.end("suceess");
 		}catch(err){
-			res.end("Error");
+			res.end(err);
 		}
+	});
+	
+	app.post("/",function(req,res){
+		console.log("Posting data"+JSON.stringify(req.body));
 	});
 
 	app.get("/",function(req,res){
+		console.log("getting...");
 		var query=db.view('Info','Info');
 		query.query([{key:"diwakarshukla14@gmail.com"},{key:"maheshgrt007@gmail.com"}],function(err,res){
 			console.log(JSON.stringify(res));
@@ -87,34 +85,29 @@ module.exports=function(app){
 	}
 
 	function getValue(doc){
-		if(doc===null){
-			return null;
-		}
-		while(!doc.Name){
+		while(typeof(doc)!=='undefined' && typeof(doc.Name)==='undefined' && typeof(doc.value)!=='undefined'){
 			doc=doc.value;
 		}
    		 return doc;
 	}
 
-	function SendMessage(senderEmail,reciverEmail,Message){
+	function SendMessage(senderEmail,reciverEmail,Message1){
 		db.get(senderEmail,function(err,senderInfo){
 			senderInfo=getValue(senderInfo);
 			db.get(reciverEmail,function(err,reciverInfo){
 				reciverInfo=getValue(reciverInfo);
-				//msg.addDataWithKeyValue('from','Diwakar');
-				//msg.setCollapseKey('string');
-
-// set dry run
-//msg.setDryRun(false);
-
-// set delay while idle
-//msg.setDelayWhileIdle(true);
-			//	msg.addDataWithKeyValue('message','Chal bey');
-				//msg.timeToLive = Math.floor(Date.now() / 1000) + 3600 * 12; // expires 12 hour from now
-   				// message.collapseKey = 'myapp';
-    				//message.delayWhileIdle = false;
-				console.log(Message);
+				console.log(Message1);
 				var reg_ids=[];
+				var message = new gcm.Message({
+				collapse_key: 'test',
+				    data: {
+					key1: Message1
+				    },
+				    delay_while_idle: true,
+				    time_to_live: 34,
+				    dry_run: false
+				});
+				console.log(message);
 				reg_ids.push(reciverInfo.RegKey);
 				sender.send(message,reg_ids,4,function(err,result){
 					console.log(JSON.stringify(err));
@@ -143,12 +136,14 @@ module.exports=function(app){
 			for(var i in result.allParrent){
 				db.get(result.allParrent[i],function(err,result1){
 					result1=getValue(result1);
-					var newObj={Name:result1.Name,Email:result1.Email};
-					count++;
-					resArray.push(newObj);
+					if(typeof(result1)!=='undefined'){
+						var newObj={Name:result1.Name,Email:result1.Email};
+						count++;
+						resArray.push(newObj);
+					}
 					if(count==result.allParrent.length){
 						res.json(resArray);
-					}
+					}	
 					//console.log(result1.Name);
 				});
 			}
@@ -163,17 +158,24 @@ module.exports=function(app){
                         //console.log(result);
                         var count=0;
                         var resArray=[];
+			console.log("Child :"+result.Child);
+			if(result.Child.length===0){
+				console.log("dk");
+				res.json(resArray);
+				return;
+			}
                         for(var i in result.Child){
                                 db.get(result.Child[i],function(err,result1){
-					//console.log(result1);
                                         result1=getValue(result1);
-                                        var newObj={Name:result1.Name,Email:result1.Email};
-                                        count++;
-                                        resArray.push(newObj);
-                                        if(count==result.Child.length){
-                                                res.json(resArray);
-                                        }
-                                        //console.log(result1.Name);
+					if(typeof(result1)!=='undefined'){
+                                        	var newObj={Name:result1.Name,Email:result1.Email};
+                                        	count++;
+                                        	resArray.push(newObj);
+                                        	if(count==result.Child.length){
+                                                	res.json(resArray);
+							return ;
+                                        	}
+					}
                                 });
                         }
                         //console.log("Finished");

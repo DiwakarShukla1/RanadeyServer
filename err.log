@@ -7,3 +7,54 @@ connect.limit() will be removed in connect 3.0
 connect.multipart() will be removed in connect 3.0
 visit https://github.com/senchalabs/connect/wiki/Connect-3.0 for alternatives
 connect.limit() will be removed in connect 3.0
+connect.multipart() will be removed in connect 3.0
+visit https://github.com/senchalabs/connect/wiki/Connect-3.0 for alternatives
+connect.limit() will be removed in connect 3.0
+
+/home/ec2-user/finalProject1/route/routes.js:93
+		while(!doc.Name){
+		          ^
+TypeError: Cannot read property 'Name' of undefined
+    at getValue (/home/ec2-user/finalProject1/route/routes.js:93:13)
+    at /home/ec2-user/finalProject1/route/routes.js:169:49
+connect.multipart() will be removed in connect 3.0
+visit https://github.com/senchalabs/connect/wiki/Connect-3.0 for alternatives
+connect.limit() will be removed in connect 3.0
+
+/home/ec2-user/finalProject1/route/routes.js:93
+		while(!doc.Name){
+		          ^
+TypeError: Cannot read property 'Name' of undefined
+    at getValue (/home/ec2-user/finalProject1/route/routes.js:93:13)
+    at /home/ec2-user/finalProject1/route/routes.js:169:49
+connect.multipart() will be removed in connect 3.0
+visit https://github.com/senchalabs/connect/wiki/Connect-3.0 for alternatives
+connect.limit() will be removed in connect 3.0
+connect.multipart() will be removed in connect 3.0
+visit https://github.com/senchalabs/connect/wiki/Connect-3.0 for alternatives
+connect.limit() will be removed in connect 3.0
+connect.multipart() will be removed in connect 3.0
+visit https://github.com/senchalabs/connect/wiki/Connect-3.0 for alternatives
+connect.limit() will be removed in connect 3.0
+connect.multipart() will be removed in connect 3.0
+visit https://github.com/senchalabs/connect/wiki/Connect-3.0 for alternatives
+connect.limit() will be removed in connect 3.0
+connect.multipart() will be removed in connect 3.0
+visit https://github.com/senchalabs/connect/wiki/Connect-3.0 for alternatives
+connect.limit() will be removed in connect 3.0
+connect.multipart() will be removed in connect 3.0
+visit https://github.com/senchalabs/connect/wiki/Connect-3.0 for alternatives
+connect.limit() will be removed in connect 3.0
+
+/home/ec2-user/finalProject1/route/routes.js:86
+		while(!doc.Name){
+		          ^
+TypeError: Cannot read property 'Name' of undefined
+    at getValue (/home/ec2-user/finalProject1/route/routes.js:86:13)
+    at /home/ec2-user/finalProject1/route/routes.js:130:11
+connect.multipart() will be removed in connect 3.0
+visit https://github.com/senchalabs/connect/wiki/Connect-3.0 for alternatives
+connect.limit() will be removed in connect 3.0
+connect.multipart() will be removed in connect 3.0
+visit https://github.com/senchalabs/connect/wiki/Connect-3.0 for alternatives
+connect.limit() will be removed in connect 3.0
